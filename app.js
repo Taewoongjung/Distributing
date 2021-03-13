@@ -7,13 +7,13 @@ const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const passport = require('passport');
 const helmet = require('helmet');  // 서버 요청 보안을 책임져준다. 
-const hpp = require('hpp'); //  "
+const hpp = require('hpp');  //  "
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 
 dotenv.config();
 const redisClient = redis.createClient({
-  url:`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD,
 });
 const pageRouter = require('./routes/page');
@@ -32,6 +32,7 @@ nunjucks.configure('views', {
   express: app,
   watch: true,
 });
+
 sequelize.sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결 성공');
@@ -40,7 +41,7 @@ sequelize.sync({ force: false })
     console.error(err);
   });
 
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   app.enable('trust proxy'); // 프록시를 사용 한다면 추가
   app.use(morgan('combined'));
   app.use(helmet({ contentSecurityPolicy: false }));  // contentSecurityPolicy : false 로 해주어야 오류가 덜 난다.
@@ -48,7 +49,6 @@ if(process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev'));
 }
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
@@ -86,6 +86,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  console.error(err);
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
   res.status(err.status || 500);
