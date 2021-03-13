@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const helmet = require('helmet');  // 서버 요청 보안을 책임져준다. 
 const hpp = require('hpp'); //  "
+const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 
 dotenv.config();
